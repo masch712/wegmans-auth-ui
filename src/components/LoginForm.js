@@ -81,9 +81,8 @@ class _LoginForm extends Component {
     return (
       <Paper className={classes.root}>
         <form onSubmit={this.handleSubmitForm}>
-          {/* <Grid
+          <Grid
             container
-            className={classes.root}
             direction='column'>
             <Grid item>
               <FormLabel>Wegmans Login</FormLabel>
@@ -117,17 +116,16 @@ class _LoginForm extends Component {
             </Grid>
             <Grid item>
               <Button type='submit' >submit</Button>
-            </Grid> */}
+            </Grid>
           </Grid>
         </form>
-      </Paper>
+      </Paper >
     )
   }
 }
 
 export const LoginForm = withStyles(theme => ({
   root: {
-    // flexGrow: 1,
   },
   demo: {
     height: 240,
@@ -139,8 +137,5 @@ export const LoginForm = withStyles(theme => ({
   },
   textField: {
     padding: 20,
-    // flexGrow: 1
-    // width: '100%',
-    // maxWidth: 400
   }
 }))(_LoginForm);
