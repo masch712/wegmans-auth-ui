@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import TextField from "@material-ui/core/TextField";
-import { Button, Paper, FormControl, FormLabel, Grid } from '@material-ui/core';
+import { Button, Paper, FormControl, FormLabel, Grid, TextField, InputAdornment, IconButton } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
+
 import * as request from 'request-promise-native';
 
 class _LoginForm extends Component {
@@ -10,26 +12,34 @@ class _LoginForm extends Component {
     this.state = {
       emailInputValue: '',
       passwordInputValue: '',
+      showPassword: false,
     };
 
     this.handleSubmitForm = this.handleSubmitForm.bind(this);
     this.handleEmailInputChange = this.handleEmailInputChange.bind(this);
     this.handlePasswordInputChange = this.handlePasswordInputChange.bind(this);
+    this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
+    this.handleMouseDownPassword = this.handleMouseDownPassword.bind(this);
   }
 
   async login(email, password) {
     // hit our wegmans auth server (my lambda)
-    const response = await request({
-      method: 'POST',
-      uri: process.env.REACT_APP_WEGMANS_AUTH_SERVER,
-      body: {
-        username: email,
-        password: password,
-      },
-      json: true
-    });
+    let code;
+    try {
+      const response = await request({
+        method: 'POST',
+        uri: process.env.REACT_APP_WEGMANS_AUTH_SERVER,
+        body: {
+          username: email,
+          password: password,
+        },
+        json: true
+      });
 
-    const code = response.code;
+      code = response.code;
+    } catch (err) {
+      console.log(err);
+    }
 
     // redirect
     //TODO: validate that redirect_url is one of the expected ones from the alexa skill.  for security
@@ -45,7 +55,9 @@ class _LoginForm extends Component {
   }
 
   async handleSubmitForm(event) {
-    return await this.login(this.state.emailInputValue, this.state.passwordInputValue);
+    event.preventDefault();
+    await this.login(this.state.emailInputValue, this.state.passwordInputValue);
+    return false;
   }
 
   async handleEmailInputChange(event) {
@@ -56,34 +68,56 @@ class _LoginForm extends Component {
     this.setState({ passwordInputValue: event.target.value });
   }
 
+  handleMouseDownPassword(event) {
+    event.preventDefault();
+  }
+
+  handleClickShowPassword(event) {
+    this.setState({ showPassword: !this.state.showPassword });
+  }
+
   render() {
     const classes = this.props.classes;
     return (
       <Paper className={classes.root}>
         <form onSubmit={this.handleSubmitForm}>
-          <Grid
+          {/* <Grid
             container
             className={classes.root}
             direction='column'>
             <Grid item>
               <FormLabel>Wegmans Login</FormLabel>
             </Grid>
-            <Grid item>
+            <Grid item xs={12}>
               <TextField
                 label='email'
+                className={classes.textField}
                 onChange={this.handleEmailInputChange}
                 value={this.state.emailInputValue} />
             </Grid>
-            <Grid item>
+            <Grid item xs={12}>
               <TextField
                 label='password'
+                className={classes.textField}
                 onChange={this.handlePasswordInputChange}
                 value={this.state.passwordInputValue}
-                type='password' />
+                type={this.state.showPassword ? 'text' : 'password'}
+                InputProps={{
+                  endAdornment:
+                    <InputAdornment>
+                      <IconButton
+                        aria-label="Toggle password visibility"
+                        onClick={this.handleClickShowPassword}
+                        onMouseDown={this.handleMouseDownPassword}>
+                        {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                }}
+              />
             </Grid>
             <Grid item>
               <Button type='submit' >submit</Button>
-            </Grid>
+            </Grid> */}
           </Grid>
         </form>
       </Paper>
@@ -93,7 +127,7 @@ class _LoginForm extends Component {
 
 export const LoginForm = withStyles(theme => ({
   root: {
-    flexGrow: 1,
+    // flexGrow: 1,
   },
   demo: {
     height: 240,
@@ -103,7 +137,10 @@ export const LoginForm = withStyles(theme => ({
     height: '100%',
     color: theme.palette.text.secondary,
   },
-  control: {
-    padding: theme.spacing.unit * 2,
-  },
+  textField: {
+    padding: 20,
+    // flexGrow: 1
+    // width: '100%',
+    // maxWidth: 400
+  }
 }))(_LoginForm);
