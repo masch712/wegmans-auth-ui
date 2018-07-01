@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TextField from "@material-ui/core/TextField";
-import { Button, Paper, FormControl, FormLabel } from '@material-ui/core';
+import { Button, Paper, FormControl, FormLabel, Grid } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import * as request from 'request-promise-native';
 
@@ -57,27 +57,53 @@ class _LoginForm extends Component {
   }
 
   render() {
+    const classes = this.props.classes;
     return (
-      <Paper className={this.props.classes.root}>
-        <FormControl>
-          <FormLabel>Wegmans Login</FormLabel>
-          <TextField label='email' onChange={this.handleEmailInputChange} value={this.state.emailInputValue} />
-          <TextField label='password' onChange={this.handlePasswordInputChange} value={this.state.passwordInputValue} />
-          <Button onClick={this.handleSubmitForm}>submit</Button>
-        </FormControl>
+      <Paper className={classes.root}>
+        <form onSubmit={this.handleSubmitForm}>
+          <Grid
+            container
+            className={classes.root}
+            direction='column'>
+            <Grid item>
+              <FormLabel>Wegmans Login</FormLabel>
+            </Grid>
+            <Grid item>
+              <TextField
+                label='email'
+                onChange={this.handleEmailInputChange}
+                value={this.state.emailInputValue} />
+            </Grid>
+            <Grid item>
+              <TextField
+                label='password'
+                onChange={this.handlePasswordInputChange}
+                value={this.state.passwordInputValue}
+                type='password' />
+            </Grid>
+            <Grid item>
+              <Button type='submit' >submit</Button>
+            </Grid>
+          </Grid>
+        </form>
       </Paper>
     )
   }
 }
 
 export const LoginForm = withStyles(theme => ({
-  root: theme.mixins.gutters({
-    paddingTop: 16,
-    paddingBottom: 16,
-    paddingLeft: 16,
-    paddingRight: 16,
-    marginTop: theme.spacing.unit * 3,
-    marginLeft: theme.spacing.unit * 3,
-    marginRight: theme.spacing.unit * 3,
-  }),
+  root: {
+    flexGrow: 1,
+  },
+  demo: {
+    height: 240,
+  },
+  paper: {
+    padding: theme.spacing.unit * 2,
+    height: '100%',
+    color: theme.palette.text.secondary,
+  },
+  control: {
+    padding: theme.spacing.unit * 2,
+  },
 }))(_LoginForm);
