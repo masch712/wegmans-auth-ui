@@ -16,7 +16,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "deploy": "aws s3 sync build/ s3://wegmans-auth/ && aws cloudfront create-invalidation --distribution-id E28PR9CCEXJWCA --paths \"/*\""
+    "deploy": "aws s3 sync build/ s3://wegmans-auth/ --cache-control max-age=0"
   },
   "devDependencies": {
     "@material-ui/icons": "^1.1.0"
